@@ -97,7 +97,7 @@
     "src"
   ],
   "scripts": {
-    "build:inferno": "NODE_ENV=development webpack --config ./config/webpack.config.js --progress --color",
+    "build:inferno:dev": "NODE_ENV=development webpack --config ./config/webpack.config.js --progress --color",
     "build:inferno:prod": "NODE_ENV=production webpack --config ./config/webpack.config.js --progress --color -p",
     "browser": "webpack-dev-server --config config/webpack.dev.conf.js",
     "build:packages": "lerna exec -- ../../node_modules/.bin/tsc",

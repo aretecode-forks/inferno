@@ -57,7 +57,7 @@ const query = {
 	cacheDirectory: true,
 	presets: [
     [ 'es2015', { loose: true }],
-		'stage-2'
+		'stage-2',
 	],
 	plugins: [
 		'babel-plugin-transform-object-assign',
@@ -79,14 +79,16 @@ const query = {
 
 module.exports = {
 	entry: packages,
+	// enable this for eval sourcemaps for debugging as well as sourceMapFilename
 	// devtool: '#source-map',
 	output: {
 		path: resolve('./packages/'),
 		filename: '[name]index.js', // [file].js
 		// sourceMapFilename: '[file].map',
+		libraryTarget: 'commonjs2',
 	},
 	performance: {
-		hints: false
+		hints: false,
 	},
 	module: {
 		loaders: [
