@@ -7,9 +7,6 @@
     "name": "Dominic Gannaway",
     "email": "dg@domgan.com"
   },
-  "bugs": {
-    "url": "https://github.com/infernojs/inferno/issues"
-  },
   "devDependencies": {
     "@types/benchmark": "^1.0.30",
     "@types/chai": "^3.4.34",
@@ -99,21 +96,36 @@
   "files": [
     "src"
   ],
-  "homepage": "https://github.com/infernojs/inferno#readme",
-  "keywords": [
-    "babel",
-    "react",
-    "inferno",
-    "framework",
-    "interfaces",
-    "user interfaces",
-    "html",
-    "renderToString",
-    "server",
-    "dom",
-    "browser",
-    "rollup"
-  ],
+  "scripts": {
+    "build:inferno": "NODE_ENV=development webpack --config ./config/webpack.config.js --progress --color",
+    "build:inferno:prod": "NODE_ENV=production webpack --config ./config/webpack.config.js --progress --color -p",
+    "browser": "webpack-dev-server --config config/webpack.dev.conf.js",
+    "build:packages": "lerna exec -- ../../node_modules/.bin/tsc",
+    "build:browser": "cross-env NODE_ENV=browser lerna exec -- node ../../bin/rollup",
+    "build:dev": "cross-env NODE_ENV=development lerna exec -- node ../../bin/rollup",
+    "build:prod": "cross-env NODE_ENV=production lerna exec -- node ../../bin/rollup",
+    "build": "npm run clean && npm run build:packages && npm run build:dev && npm run build:prod && npm run build:browser",
+    "clean": "rimraf coverage/ packages/*/dist*/",
+    "karma:all": "npm run karma:firefox && npm run karma:chrome && npm run karma:ie",
+    "karma:chrome": "karma start test/karma/karma.unit.conf.js --browsers=Chrome",
+    "karma:firefox": "karma start test/karma/karma.unit.conf.js --browsers=Firefox",
+    "karma:ie": "karma start test/karma/karma.unit.conf.js --browsers=IE",
+    "lint:js": "eslint config examples src packages/*/__tests__/*",
+    "lint:ts": "tslint packages/*/src/*.ts",
+    "lint": "npm run lint:ts && npm run lint:js",
+    "packages:purge": "rimraf node_modules",
+    "packages:reinstall": "npm run packages:purge && npm install",
+    "postinstall": "lerna bootstrap && lerna exec --no-sort --concurrency 1 -- node ../../bin/link",
+    "prepublish": "npm run build",
+    "pretest:bench": "karma start test/karma/karma.bench.conf.js --log-level debug",
+    "test:bench": "node test/karma/bench.js",
+    "test:browser": "karma start test/karma/karma.unit.conf.js --log-level debug",
+    "test:publish": "coveralls < coverage/lcov.info && rimraf coverage",
+    "test:quick": "cross-env mocha",
+    "tsc:dev": "lerna exec --no-sort --concurrency `ls -d packages/* | wc -l` -- tsc -w",
+    "test:server": "cross-env nyc mocha",
+    "test": "npm run lint && npm run build && npm run test:browser && npm run test:server"
+  },
   "nyc": {
     "all": true,
     "check-coverage": true,
@@ -146,40 +158,34 @@
       "babel-register"
     ]
   },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/infernojs/inferno.git"
-  },
-  "scripts": {
-    "browser": "webpack-dev-server --config config/webpack.dev.conf.js",
-    "build:packages": "lerna exec -- ../../node_modules/.bin/tsc",
-    "build:browser": "cross-env NODE_ENV=browser lerna exec -- node ../../bin/rollup",
-    "build:dev": "cross-env NODE_ENV=development lerna exec -- node ../../bin/rollup",
-    "build:prod": "cross-env NODE_ENV=production lerna exec -- node ../../bin/rollup",
-    "build": "npm run clean && npm run build:packages && npm run build:dev && npm run build:prod && npm run build:browser",
-    "clean": "rimraf coverage/ packages/*/dist*/",
-    "karma:all": "npm run karma:firefox && npm run karma:chrome && npm run karma:ie",
-    "karma:chrome": "karma start test/karma/karma.unit.conf.js --browsers=Chrome",
-    "karma:firefox": "karma start test/karma/karma.unit.conf.js --browsers=Firefox",
-    "karma:ie": "karma start test/karma/karma.unit.conf.js --browsers=IE",
-    "lint:js": "eslint config examples src packages/*/__tests__/*",
-    "lint:ts": "tslint packages/*/src/*.ts",
-    "lint": "npm run lint:ts && npm run lint:js",
-    "packages:purge": "rimraf node_modules",
-    "packages:reinstall": "npm run packages:purge && npm install",
-    "postinstall": "lerna bootstrap && lerna exec --no-sort --concurrency 1 -- node ../../bin/link",
-    "prepublish": "npm run build",
-    "pretest:bench": "karma start test/karma/karma.bench.conf.js --log-level debug",
-    "test:bench": "node test/karma/bench.js",
-    "test:browser": "karma start test/karma/karma.unit.conf.js --log-level debug",
-    "test:publish": "coveralls < coverage/lcov.info && rimraf coverage",
-    "test:quick": "cross-env mocha",
-    "tsc:dev": "lerna exec --no-sort --concurrency `ls -d packages/* | wc -l` -- tsc -w",
-    "test:server": "cross-env nyc mocha",
-    "test": "npm run lint && npm run build && npm run test:browser && npm run test:server"
-  },
   "pre-commit": [
     "lint",
     "test"
-  ]
+  ],
+  "engines": {
+    "node": ">= 6.9.5",
+    "npm": ">= 3.10.10"
+  },
+  "keywords": [
+    "babel",
+    "react",
+    "inferno",
+    "framework",
+    "interfaces",
+    "user interfaces",
+    "html",
+    "renderToString",
+    "server",
+    "dom",
+    "browser",
+    "rollup"
+  ],
+  "homepage": "https://github.com/infernojs/inferno#readme",
+  "bugs": {
+    "url": "https://github.com/infernojs/inferno/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/infernojs/inferno.git"
+  }
 }
